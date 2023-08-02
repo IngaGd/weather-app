@@ -13,11 +13,13 @@ export default function Map() {
 
     useEffect(() => {
         const onMapClick = (e) => {
-            L.popup()
-                .setLatLng(e.latlng)
-                .setContent('You clicked the map at ' + e.latlng.toString())
-                .openOn(mapRef.current);
-            L.marker(e.latlng, { icon: myIcon }).addTo(mapRef.current);
+            L.popup().setLatLng(e.latlng).openOn(mapRef.current);
+            const marker = L.marker(e.latlng, { icon: myIcon }).addTo(
+                mapRef.current
+            );
+            marker
+                .bindPopup('You clicked the map at ' + e.latlng.toString())
+                .openPopup();
         };
         if (!mapRef.current) {
             mapRef.current = L.map('map', {
