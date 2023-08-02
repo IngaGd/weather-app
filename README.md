@@ -1,3 +1,7 @@
+# Map integration using JavaSrcipt mapping library Leaflet.js
+
+[Leaflet usage example](https://leafletjs.com/reference-1.7.1.html#map-example)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
