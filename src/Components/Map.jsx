@@ -3,12 +3,18 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useRef } from 'react';
 import locationIcon from '../assets/icons/location-point.png';
+import { useState } from 'react';
 
 export default function Map() {
     const mapRef = useRef(null);
     const myIcon = L.icon({
         iconUrl: locationIcon,
         iconSize: [20, 50],
+    });
+
+    const [coords, setCoords] = useState({
+        lat: 54.6872,
+        lng: 25.2797,
     });
 
     useEffect(() => {
@@ -20,10 +26,11 @@ export default function Map() {
             marker
                 .bindPopup('You clicked the map at ' + e.latlng.toString())
                 .openPopup();
+            setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
         };
         if (!mapRef.current) {
             mapRef.current = L.map('map', {
-                center: [51.505, -0.09],
+                center: [coords.lat, coords.lng],
                 zoom: 13,
             });
 
@@ -44,12 +51,14 @@ export default function Map() {
                 mapRef.current = null;
             }
         };
-    }, [myIcon]);
+    }, [myIcon, coords]);
 
     return (
         <div className="section-map">
             <div className="row">
                 <div id="map" className="map-container"></div>
+                <div>latitude: {coords.lat}</div>
+                <div>longtitude: {coords.lng}</div>
             </div>
         </div>
     );
