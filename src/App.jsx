@@ -1,11 +1,12 @@
+import { GlobalContextProvider } from './Components/GlobalContext';
 import Home from './pages/Home';
 import './style/main.scss';
 
 function App() {
     return (
-        <div>
+        <GlobalContextProvider>
             <Home />
-        </div>
+        </GlobalContextProvider>
     );
 }
 

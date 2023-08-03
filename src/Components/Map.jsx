@@ -1,20 +1,17 @@
-import React from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useContext, useState } from 'react';
 import { useEffect, useRef } from 'react';
 import locationIcon from '../assets/icons/location-point.png';
-import { useState } from 'react';
+import { GlobalContext } from './GlobalContext';
 
 export default function Map() {
+    const { addMarker } = useContext(GlobalContext);
+    const [mapMarkers, setMapMarkers] = useState([]);
     const mapRef = useRef(null);
     const myIcon = L.icon({
         iconUrl: locationIcon,
         iconSize: [20, 50],
-    });
-
-    const [coords, setCoords] = useState({
-        lat: 54.6872,
-        lng: 25.2797,
     });
 
     useEffect(() => {
@@ -23,14 +20,13 @@ export default function Map() {
             const marker = L.marker(e.latlng, { icon: myIcon }).addTo(
                 mapRef.current
             );
-            marker
-                .bindPopup('You clicked the map at ' + e.latlng.toString())
-                .openPopup();
-            setCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
+            marker.bindPopup('You clicked the map at ' + e.latlng.toString());
+            addMarker(e.latlng);
+            setMapMarkers((markers) => [...markers, marker]);
         };
         if (!mapRef.current) {
             mapRef.current = L.map('map', {
-                center: [coords.lat, coords.lng],
+                center: [51.505, -0.09],
                 zoom: 13,
             });
 
@@ -51,14 +47,20 @@ export default function Map() {
                 mapRef.current = null;
             }
         };
-    }, [myIcon, coords]);
+    }, [myIcon, addMarker]);
+
+    useEffect(() => {
+        if (mapRef.current) {
+            mapMarkers.forEach((marker) => {
+                marker.addTo(mapRef.current);
+            });
+        }
+    }, [mapMarkers]);
 
     return (
         <div className="section-map">
             <div className="row">
                 <div id="map" className="map-container"></div>
-                <div>latitude: {coords.lat}</div>
-                <div>longtitude: {coords.lng}</div>
             </div>
         </div>
     );
