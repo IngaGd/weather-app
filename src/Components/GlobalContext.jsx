@@ -4,7 +4,11 @@ import { createContext } from 'react';
 export const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
-    const [markers, setMarkers] = useState([]);
+    const [markers, setMarkers] = useState(() => {
+        const savedMarkers = localStorage.getItem('markers');
+        console.log('Retrieved markers from localStorage:', savedMarkers);
+        return savedMarkers ? JSON.parse(savedMarkers) : [];
+    });
     const [weatherOptions, setWeatherOptions] = useState({
         temperature: false,
         humidity: false,
@@ -14,10 +18,15 @@ export const GlobalContextProvider = ({ children }) => {
         // rain: false,
         // visibility: false,
     });
-    const [chartData, setChartData] = useState(null);
+    const [chartData, setChartData] = useState([]);
 
     const addMarker = (markerData) => {
-        setMarkers((prevMarker) => [...prevMarker, markerData]);
+        console.log('New marker data:', markerData);
+        setMarkers((prevMarker) => {
+            const updateMarkers = [...prevMarker, markerData];
+            localStorage.setItem('markers', JSON.stringify(updateMarkers));
+            return updateMarkers;
+        });
     };
 
     const toggleWeatherOption = (option) => {
@@ -38,11 +47,11 @@ export const GlobalContextProvider = ({ children }) => {
             .then((data) => {
                 console.log(data.hourly.temperature_2m);
 
-                const chartData = {
+                const newChartData = {
                     labels: data.hourly.time,
                     datasets: [
                         {
-                            label: 'Temperature in C',
+                            label: `Temperature in C at ${latitude},${longitude}`,
                             data: data.hourly.temperature_2m,
                             fill: false,
                             backgroundColor: 'rgb(75, 192, 192)',
@@ -51,8 +60,11 @@ export const GlobalContextProvider = ({ children }) => {
                     ],
                 };
 
-                setChartData(chartData);
-                console.log(chartData);
+                setChartData((prevChartData) => [
+                    ...prevChartData,
+                    newChartData,
+                ]);
+                // console.log(chartData);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -60,8 +72,15 @@ export const GlobalContextProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        fetchHistoricalData(52.52, 13.41, '2021-12-30', '2021-12-31');
-    }, []);
+        markers.forEach((marker) => {
+            fetchHistoricalData(
+                marker.lat,
+                marker.lng,
+                '2021-12-30',
+                '2021-12-31'
+            );
+        });
+    }, [markers]);
 
     return (
         <GlobalContext.Provider

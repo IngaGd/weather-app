@@ -29,7 +29,11 @@ export default function WeatherDataGraph() {
                     </p>
                 ))}
             </div>
-            <div className="row">{data && <Line data={data} />}</div>
+            <div className="row">
+                {data?.map((item, index) => (
+                    <Line key={index} data={item} />
+                ))}
+            </div>
         </section>
     );
 }

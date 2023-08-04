@@ -1,13 +1,13 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useEffect, useRef } from 'react';
 import locationIcon from '../assets/icons/location-point.png';
 import { GlobalContext } from './GlobalContext';
 
 export default function Map() {
-    const { addMarker } = useContext(GlobalContext);
-    const [mapMarkers, setMapMarkers] = useState([]);
+    const { markers, addMarker } = useContext(GlobalContext);
+    // const [mapMarkers, setMapMarkers] = useState([]);
     const mapRef = useRef(null);
     const myIcon = L.icon({
         iconUrl: locationIcon,
@@ -16,13 +16,16 @@ export default function Map() {
 
     useEffect(() => {
         const onMapClick = (e) => {
+            console.log('e:', e);
             L.popup().setLatLng(e.latlng).openOn(mapRef.current);
             const marker = L.marker(e.latlng, { icon: myIcon }).addTo(
                 mapRef.current
             );
-            marker.bindPopup('You clicked the map at ' + e.latlng.toString());
+            marker.bindPopup(
+                'You clicked the map at ' + marker.getLatLng().toString()
+            );
             addMarker(e.latlng);
-            setMapMarkers((markers) => [...markers, marker]);
+            // setMapMarkers((markers) => [...markers, marker]);
         };
         if (!mapRef.current) {
             mapRef.current = L.map('map', {
@@ -51,11 +54,17 @@ export default function Map() {
 
     useEffect(() => {
         if (mapRef.current) {
-            mapMarkers.forEach((marker) => {
-                marker.addTo(mapRef.current);
+            markers.forEach((markerData) => {
+                console.log('Adding marker to map:', markerData);
+                const marker = L.marker([markerData.lat, markerData.lng], {
+                    icon: myIcon,
+                }).addTo(mapRef.current);
+                marker.bindPopup(
+                    'You clicked the map at ' + marker.getLatLng().toString()
+                );
             });
         }
-    }, [mapMarkers]);
+    }, [markers, myIcon]);
 
     return (
         <div className="section-map">
