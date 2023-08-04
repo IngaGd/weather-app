@@ -6,7 +6,7 @@ import locationIcon from '../assets/icons/location-point.png';
 import { GlobalContext } from './GlobalContext';
 
 export default function Map() {
-    const { markers, addMarker } = useContext(GlobalContext);
+    const { markers, addMarker, removeMarker } = useContext(GlobalContext);
     // const [mapMarkers, setMapMarkers] = useState([]);
     const mapRef = useRef(null);
     const myIcon = L.icon({
@@ -59,12 +59,14 @@ export default function Map() {
                 const marker = L.marker([markerData.lat, markerData.lng], {
                     icon: myIcon,
                 }).addTo(mapRef.current);
+                marker.on('click', () => removeMarker(markerData.id));
                 marker.bindPopup(
-                    'You clicked the map at ' + marker.getLatLng().toString()
+                    // 'You clicked the map at ' + marker.getLatLng().toString()
+                    markerData.id
                 );
             });
         }
-    }, [markers, myIcon]);
+    }, [markers, myIcon, removeMarker]);
 
     return (
         <div className="section-map">

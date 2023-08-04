@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export const GlobalContext = createContext();
 
@@ -22,8 +23,19 @@ export const GlobalContextProvider = ({ children }) => {
 
     const addMarker = (markerData) => {
         console.log('New marker data:', markerData);
+        const id = uuidv4();
         setMarkers((prevMarker) => {
-            const updateMarkers = [...prevMarker, markerData];
+            const updateMarkers = [...prevMarker, { id, ...markerData }];
+            localStorage.setItem('markers', JSON.stringify(updateMarkers));
+            return updateMarkers;
+        });
+    };
+
+    const removeMarker = (id) => {
+        setMarkers((prevMarkers) => {
+            const updateMarkers = prevMarkers.filter(
+                (marker) => marker.id !== id
+            );
             localStorage.setItem('markers', JSON.stringify(updateMarkers));
             return updateMarkers;
         });
@@ -90,6 +102,7 @@ export const GlobalContextProvider = ({ children }) => {
                 weatherOptions,
                 toggleWeatherOption,
                 data: chartData,
+                removeMarker,
             }}
         >
             {children}

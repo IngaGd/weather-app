@@ -2,6 +2,10 @@
 
 [Leaflet usage example](https://leafletjs.com/reference-1.7.1.html#map-example)
 
+# Using UUID (Universally Unique Identifier) to generate IDs for Map markers
+
+[UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
