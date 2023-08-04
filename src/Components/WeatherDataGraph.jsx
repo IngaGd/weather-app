@@ -1,9 +1,24 @@
 import React from 'react';
 import { useContext } from 'react';
 import { GlobalContext } from './GlobalContext';
+import { Line } from 'react-chartjs-2';
+import {
+    Chart,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+} from 'chart.js';
+
+Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 export default function WeatherDataGraph() {
-    const { markers } = useContext(GlobalContext);
+    const { markers, data } = useContext(GlobalContext);
+
+    if (!data) {
+        return null;
+    }
+
     return (
         <section>
             <div className="row">
@@ -14,6 +29,7 @@ export default function WeatherDataGraph() {
                     </p>
                 ))}
             </div>
+            <div className="row">{data && <Line data={data} />}</div>
         </section>
     );
 }

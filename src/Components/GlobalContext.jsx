@@ -14,6 +14,7 @@ export const GlobalContextProvider = ({ children }) => {
         // rain: false,
         // visibility: false,
     });
+    const [chartData, setChartData] = useState(null);
 
     const addMarker = (markerData) => {
         setMarkers((prevMarker) => [...prevMarker, markerData]);
@@ -29,9 +30,48 @@ export const GlobalContextProvider = ({ children }) => {
         console.log(weatherOptions);
     }, [weatherOptions]);
 
+    function fetchHistoricalData(latitude, longitude, startDate, endDate) {
+        fetch(
+            `https://archive-api.open-meteo.com/v1/era5?latitude=${latitude}&longitude=${longitude}&start_date=${startDate}&end_date=${endDate}&hourly=temperature_2m`
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.hourly.temperature_2m);
+
+                const chartData = {
+                    labels: data.hourly.time,
+                    datasets: [
+                        {
+                            label: 'Temperature in C',
+                            data: data.hourly.temperature_2m,
+                            fill: false,
+                            backgroundColor: 'rgb(75, 192, 192)',
+                            borderColor: 'rgba(75, 192, 192, 0.2)',
+                        },
+                    ],
+                };
+
+                setChartData(chartData);
+                console.log(chartData);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    useEffect(() => {
+        fetchHistoricalData(52.52, 13.41, '2021-12-30', '2021-12-31');
+    }, []);
+
     return (
         <GlobalContext.Provider
-            value={{ markers, addMarker, weatherOptions, toggleWeatherOption }}
+            value={{
+                markers,
+                addMarker,
+                weatherOptions,
+                toggleWeatherOption,
+                data: chartData,
+            }}
         >
             {children}
         </GlobalContext.Provider>
