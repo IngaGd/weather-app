@@ -24,11 +24,19 @@ export const GlobalContextProvider = ({ children }) => {
     const addMarker = (markerData) => {
         console.log('New marker data:', markerData);
         const id = uuidv4();
+        const newMarker = { id, ...markerData };
         setMarkers((prevMarker) => {
-            const updateMarkers = [...prevMarker, { id, ...markerData }];
+            const updateMarkers = [...prevMarker, newMarker];
             localStorage.setItem('markers', JSON.stringify(updateMarkers));
             return updateMarkers;
         });
+        fetchHistoricalData(
+            newMarker.lat,
+            newMarker.lng,
+            '2021-12-30',
+            '2021-12-31',
+            newMarker.id
+        );
     };
 
     const removeMarker = (id) => {
@@ -38,6 +46,9 @@ export const GlobalContextProvider = ({ children }) => {
             );
             localStorage.setItem('markers', JSON.stringify(updateMarkers));
             return updateMarkers;
+        });
+        setChartData((prevChartData) => {
+            return prevChartData.filter((chart) => chart.id !== id);
         });
     };
 
@@ -51,7 +62,7 @@ export const GlobalContextProvider = ({ children }) => {
         console.log(weatherOptions);
     }, [weatherOptions]);
 
-    function fetchHistoricalData(latitude, longitude, startDate, endDate) {
+    function fetchHistoricalData(latitude, longitude, startDate, endDate, id) {
         fetch(
             `https://archive-api.open-meteo.com/v1/era5?latitude=${latitude}&longitude=${longitude}&start_date=${startDate}&end_date=${endDate}&hourly=temperature_2m`
         )
@@ -60,6 +71,7 @@ export const GlobalContextProvider = ({ children }) => {
                 console.log(data.hourly.temperature_2m);
 
                 const newChartData = {
+                    id,
                     labels: data.hourly.time,
                     datasets: [
                         {
@@ -76,23 +88,11 @@ export const GlobalContextProvider = ({ children }) => {
                     ...prevChartData,
                     newChartData,
                 ]);
-                // console.log(chartData);
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     }
-
-    useEffect(() => {
-        markers.forEach((marker) => {
-            fetchHistoricalData(
-                marker.lat,
-                marker.lng,
-                '2021-12-30',
-                '2021-12-31'
-            );
-        });
-    }, [markers]);
 
     return (
         <GlobalContext.Provider
