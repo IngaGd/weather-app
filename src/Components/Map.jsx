@@ -1,5 +1,7 @@
 import L from 'leaflet';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-geosearch/assets/css/leaflet.css';
 import { useContext } from 'react';
 import { useEffect, useRef } from 'react';
 import locationIcon from '../assets/icons/location-point.png';
@@ -7,7 +9,6 @@ import { GlobalContext } from './GlobalContext';
 
 export default function Map() {
     const { markers, addMarker, removeMarker } = useContext(GlobalContext);
-    // const [mapMarkers, setMapMarkers] = useState([]);
     const mapRef = useRef(null);
     const myIcon = L.icon({
         iconUrl: locationIcon,
@@ -16,7 +17,6 @@ export default function Map() {
 
     useEffect(() => {
         const onMapClick = (e) => {
-            console.log('e:', e);
             L.popup().setLatLng(e.latlng).openOn(mapRef.current);
             const marker = L.marker(e.latlng, { icon: myIcon }).addTo(
                 mapRef.current
@@ -30,7 +30,7 @@ export default function Map() {
         if (!mapRef.current) {
             mapRef.current = L.map('map', {
                 center: [51.505, -0.09],
-                zoom: 13,
+                zoom: 2,
             });
 
             L.tileLayer(
@@ -42,6 +42,30 @@ export default function Map() {
                 }
             ).addTo(mapRef.current);
             mapRef.current.on('click', onMapClick);
+            const provider = new OpenStreetMapProvider();
+
+            const searchControl = new GeoSearchControl({
+                provider: provider,
+                showMarker: true, // Decide whether to show marker on search
+                showPopup: true, // Decide whether to show popup on search
+                autoClose: true,
+                retainZoomLevel: false,
+                animateZoom: true,
+                keepResult: false,
+                searchLabel: 'Enter location',
+            });
+            mapRef.current.addControl(searchControl);
+
+            mapRef.current.on('geosearch/showlocation', (e) => {
+                const latlng = { lat: e.location.y, lng: e.location.x };
+                const marker = L.marker(latlng, { icon: myIcon }).addTo(
+                    mapRef.current
+                );
+                marker.bindPopup(
+                    'You clicked the map at ' + marker.getLatLng().toString()
+                );
+                addMarker(latlng);
+            });
         }
 
         return () => {
@@ -60,10 +84,7 @@ export default function Map() {
                     icon: myIcon,
                 }).addTo(mapRef.current);
                 marker.on('click', () => removeMarker(markerData.id));
-                marker.bindPopup(
-                    // 'You clicked the map at ' + marker.getLatLng().toString()
-                    markerData.id
-                );
+                marker.bindPopup(markerData.id);
             });
         }
     }, [markers, myIcon, removeMarker]);

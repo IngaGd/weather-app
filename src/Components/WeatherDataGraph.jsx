@@ -13,7 +13,8 @@ import {
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 export default function WeatherDataGraph() {
-    const { markers, data, weatherOptions } = useContext(GlobalContext);
+    const { markers, data, weatherOptions, removeMarker } =
+        useContext(GlobalContext);
 
     if (!data) {
         return null;
@@ -25,7 +26,10 @@ export default function WeatherDataGraph() {
                 {markers.map((marker, index) => (
                     <p key={index}>
                         Marker {index + 1}: Latitude - {marker.lat}, Longitude -{' '}
-                        {marker.lng}
+                        {marker.lng}{' '}
+                        <button onClick={() => removeMarker(marker.id)}>
+                            Remove Marker
+                        </button>
                     </p>
                 ))}
             </div>
