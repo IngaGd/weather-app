@@ -7,19 +7,42 @@ export const GlobalContext = createContext();
 export const GlobalContextProvider = ({ children }) => {
     const [markers, setMarkers] = useState(() => {
         const savedMarkers = localStorage.getItem('markers');
-        console.log('Retrieved markers from localStorage:', savedMarkers);
         return savedMarkers ? JSON.parse(savedMarkers) : [];
     });
+    const [dateRange, setDateRange] = useState({
+        startDate: '2022-12-30',
+        endDate: '2022-12-31',
+    });
+
+    const updateDateRange = (startDate, endDate) => {
+        setDateRange({ startDate, endDate });
+    };
+
     const [weatherOptions, setWeatherOptions] = useState({
-        temperature: false,
-        humidity: false,
+        temperature_2m: false,
+        relativehumidity_2m: false,
         // dewpoint: false,
         // windSpeed: false,
         // windDirection: false,
         // rain: false,
         // visibility: false,
     });
-    const [chartData, setChartData] = useState([]);
+    const [chartData, setChartData] = useState(() => {
+        const savedChartData = {};
+        for (let option in weatherOptions) {
+            savedChartData[option] = {
+                labels: [],
+                datasets: [],
+            };
+        }
+        return savedChartData;
+    });
+
+    useEffect(() => {
+        markers.forEach((marker) => {
+            fetchHistoricalData(marker, weatherOptions, dateRange);
+        });
+    }, [markers, weatherOptions, dateRange]);
 
     const addMarker = (markerData) => {
         console.log('New marker data:', markerData);
@@ -30,13 +53,7 @@ export const GlobalContextProvider = ({ children }) => {
             localStorage.setItem('markers', JSON.stringify(updateMarkers));
             return updateMarkers;
         });
-        fetchHistoricalData(
-            newMarker.lat,
-            newMarker.lng,
-            '2021-12-30',
-            '2021-12-31',
-            newMarker.id
-        );
+        fetchHistoricalData(newMarker, weatherOptions, dateRange);
     };
 
     const removeMarker = (id) => {
@@ -48,7 +65,16 @@ export const GlobalContextProvider = ({ children }) => {
             return updateMarkers;
         });
         setChartData((prevChartData) => {
-            return prevChartData.filter((chart) => chart.id !== id);
+            const updateChartData = {};
+            for (let option in prevChartData) {
+                updateChartData[option] = {
+                    ...prevChartData[option],
+                    datasets: prevChartData[option].datasets.filter(
+                        (dataset) => !dataset.label.includes(`Marker ${id}:`)
+                    ),
+                };
+            }
+            return updateChartData;
         });
     };
 
@@ -62,36 +88,38 @@ export const GlobalContextProvider = ({ children }) => {
         console.log(weatherOptions);
     }, [weatherOptions]);
 
-    function fetchHistoricalData(latitude, longitude, startDate, endDate, id) {
-        fetch(
-            `https://archive-api.open-meteo.com/v1/era5?latitude=${latitude}&longitude=${longitude}&start_date=${startDate}&end_date=${endDate}&hourly=temperature_2m`
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data.hourly.temperature_2m);
+    async function fetchHistoricalData(marker, weatherOptions, dateRange) {
+        const { id, lat: latitude, lng: longitude } = marker;
+        for (let option in weatherOptions) {
+            if (weatherOptions[option]) {
+                try {
+                    const response = await fetch(
+                        `https://archive-api.open-meteo.com/v1/era5?latitude=${latitude}&longitude=${longitude}&start_date=${dateRange.startDate}&end_date=${dateRange.endDate}&hourly=${option}`
+                    );
+                    const data = await response.json();
+                    const dataset = {
+                        label: `Marker ${id}: ${option} at ${latitude},${longitude}`,
+                        data: data.hourly[option],
+                        fill: false,
+                        backgroundColor: 'rgb(75, 192, 192)',
+                        borderColor: 'rgba(75, 192, 192, 0.2)',
+                    };
 
-                const newChartData = {
-                    id,
-                    labels: data.hourly.time,
-                    datasets: [
-                        {
-                            label: `Temperature in C at ${latitude},${longitude}`,
-                            data: data.hourly.temperature_2m,
-                            fill: false,
-                            backgroundColor: 'rgb(75, 192, 192)',
-                            borderColor: 'rgba(75, 192, 192, 0.2)',
+                    setChartData((prevChartData) => ({
+                        ...prevChartData,
+                        [option]: {
+                            labels: data.hourly.time,
+                            datasets: [
+                                ...(prevChartData[option]?.datasets || []),
+                                dataset,
+                            ],
                         },
-                    ],
-                };
-
-                setChartData((prevChartData) => [
-                    ...prevChartData,
-                    newChartData,
-                ]);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+                    }));
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
     }
 
     return (
@@ -103,6 +131,8 @@ export const GlobalContextProvider = ({ children }) => {
                 toggleWeatherOption,
                 data: chartData,
                 removeMarker,
+                dateRange,
+                updateDateRange,
             }}
         >
             {children}

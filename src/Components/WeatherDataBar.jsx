@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { GlobalContext } from './GlobalContext';
 
 export default function WeatherDataBar() {
-    const { weatherOptions, toggleWeatherOption } = useContext(GlobalContext);
+    const { weatherOptions, toggleWeatherOption, dateRange, updateDateRange } =
+        useContext(GlobalContext);
     // const [humidity, setHumidity] = useState(false);
     // const [dewpoint, setDewpoint] = useState(false);
     // const [windSpeed, setWindSpeed] = useState(false);
@@ -18,13 +19,43 @@ export default function WeatherDataBar() {
                         <fieldset>
                             <legend>Choose forecast option</legend>
                             <div>
+                                <label htmlFor="startDate">Start Date:</label>
+                                <input
+                                    type="date"
+                                    id="startDate"
+                                    name="startDate"
+                                    value={dateRange.startDate}
+                                    onChange={(e) =>
+                                        updateDateRange(
+                                            e.target.value,
+                                            dateRange.endDate
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="endDate">End Date:</label>
+                                <input
+                                    type="date"
+                                    id="endDate"
+                                    name="endDate"
+                                    value={dateRange.endDate}
+                                    onChange={(e) =>
+                                        updateDateRange(
+                                            dateRange.startDate,
+                                            e.target.value
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div>
                                 <input
                                     type="checkbox"
                                     id="temperature"
                                     name="temperature"
-                                    checked={weatherOptions.temperature}
+                                    checked={weatherOptions['temperature_2m']}
                                     onChange={() =>
-                                        toggleWeatherOption('temperature')
+                                        toggleWeatherOption('temperature_2m')
                                     }
                                 />
                                 <label htmlFor="temperature">Temperature</label>
@@ -34,9 +65,13 @@ export default function WeatherDataBar() {
                                     type="checkbox"
                                     id="humidity"
                                     name="humidity"
-                                    checked={weatherOptions.humidity}
+                                    checked={
+                                        weatherOptions['relativehumidity_2m']
+                                    }
                                     onChange={() =>
-                                        toggleWeatherOption('humidity')
+                                        toggleWeatherOption(
+                                            'relativehumidity_2m'
+                                        )
                                     }
                                 />
                                 <label htmlFor="humidity">Humidity</label>

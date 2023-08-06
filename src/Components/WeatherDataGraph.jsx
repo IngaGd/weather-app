@@ -13,7 +13,7 @@ import {
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
 
 export default function WeatherDataGraph() {
-    const { markers, data } = useContext(GlobalContext);
+    const { markers, data, weatherOptions } = useContext(GlobalContext);
 
     if (!data) {
         return null;
@@ -29,11 +29,14 @@ export default function WeatherDataGraph() {
                     </p>
                 ))}
             </div>
-            <div className="row">
-                {data?.map((item, index) => (
-                    <Line key={index} data={item} />
-                ))}
-            </div>
+            {Object.keys(weatherOptions).map((option, index) => (
+                <div className="row" key={index}>
+                    <h3>{option}</h3>
+                    {weatherOptions[option] && data[option] && (
+                        <Line data={data[option]} />
+                    )}
+                </div>
+            ))}
         </section>
     );
 }
