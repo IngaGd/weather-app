@@ -4,12 +4,6 @@ import { GlobalContext } from './GlobalContext';
 export default function WeatherDataBar() {
     const { weatherOptions, toggleWeatherOption, dateRange, updateDateRange } =
         useContext(GlobalContext);
-    // const [humidity, setHumidity] = useState(false);
-    // const [dewpoint, setDewpoint] = useState(false);
-    // const [windSpeed, setWindSpeed] = useState(false);
-    // const [windDirection, setWindDirection] = useState(false);
-    // const [rain, setRain] = useState(false);
-    // const [visibility, setVisibility] = useState(false);
 
     return (
         <>
@@ -74,41 +68,34 @@ export default function WeatherDataBar() {
                                         )
                                     }
                                 />
-                                <label htmlFor="humidity">Humidity</label>
-                            </div>
-                            {/* <div>
-                                <input
-                                    type="checkbox"
-                                    id="dewpoint"
-                                    name="dewpoint"
-                                    onChange={() =>
-                                        toggleWeatherOption('dewpoint')
-                                    }
-                                />
-                                <label htmlFor="dewpoint">Dewpoint</label>
+                                <label htmlFor="humidity">Humidity 2m</label>
                             </div>
                             <div>
                                 <input
                                     type="checkbox"
                                     id="windSpeed"
                                     name="windSpeed"
+                                    checked={weatherOptions['windspeed_10m']}
                                     onChange={() =>
-                                        toggleWeatherOption('windSpeed')
+                                        toggleWeatherOption('windspeed_10m')
                                     }
                                 />
-                                <label htmlFor="windSpeed">Wind speed</label>
+                                <label htmlFor="windSpeed">Windspeed 10m</label>
                             </div>
                             <div>
                                 <input
                                     type="checkbox"
                                     id="windDirection"
                                     name="windDirection"
+                                    checked={
+                                        weatherOptions['winddirection_10m']
+                                    }
                                     onChange={() =>
-                                        toggleWeatherOption('windDirection')
+                                        toggleWeatherOption('winddirection_10m')
                                     }
                                 />
                                 <label htmlFor="windDirection">
-                                    Wind direction
+                                    Winddirection 10m
                                 </label>
                             </div>
                             <div>
@@ -116,6 +103,7 @@ export default function WeatherDataBar() {
                                     type="checkbox"
                                     id="rain"
                                     name="rain"
+                                    checked={weatherOptions['rain']}
                                     onChange={() => toggleWeatherOption('rain')}
                                 />
                                 <label htmlFor="rain">Rain</label>
@@ -123,14 +111,15 @@ export default function WeatherDataBar() {
                             <div>
                                 <input
                                     type="checkbox"
-                                    id="visibility"
-                                    name="visibility"
+                                    id="snowfall"
+                                    name="snowfall"
+                                    checked={weatherOptions['snowfall']}
                                     onChange={() =>
-                                        toggleWeatherOption('visibility')
+                                        toggleWeatherOption('snowfall')
                                     }
                                 />
-                                <label htmlFor="visibility">Visibility</label>
-                            </div> */}
+                                <label htmlFor="snowfall">Snowfall</label>
+                            </div>
                         </fieldset>
                     </div>
                 </div>

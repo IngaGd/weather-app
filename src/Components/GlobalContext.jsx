@@ -21,11 +21,9 @@ export const GlobalContextProvider = ({ children }) => {
     const [weatherOptions, setWeatherOptions] = useState({
         temperature_2m: false,
         relativehumidity_2m: false,
-        // dewpoint: false,
-        // windSpeed: false,
-        // windDirection: false,
-        // rain: false,
-        // visibility: false,
+        windspeed_10m: false,
+        winddirection_10m: false,
+        rain: false,
     });
     const [chartData, setChartData] = useState(() => {
         const savedChartData = {};

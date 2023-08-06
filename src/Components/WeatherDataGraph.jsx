@@ -29,14 +29,15 @@ export default function WeatherDataGraph() {
                     </p>
                 ))}
             </div>
-            {Object.keys(weatherOptions).map((option, index) => (
-                <div className="row" key={index}>
-                    <h3>{option}</h3>
-                    {weatherOptions[option] && data[option] && (
-                        <Line data={data[option]} />
-                    )}
-                </div>
-            ))}
+            {Object.keys(weatherOptions).map(
+                (option, index) =>
+                    weatherOptions[option] && (
+                        <div className="row" key={index}>
+                            <h3>{option}</h3>
+                            {data[option] && <Line data={data[option]} />}
+                        </div>
+                    )
+            )}
         </section>
     );
 }
