@@ -46,8 +46,8 @@ export default function Map() {
 
             const searchControl = new GeoSearchControl({
                 provider: provider,
-                showMarker: true, // Decide whether to show marker on search
-                showPopup: true, // Decide whether to show popup on search
+                showMarker: true,
+                showPopup: true,
                 autoClose: true,
                 retainZoomLevel: false,
                 animateZoom: true,
@@ -79,12 +79,19 @@ export default function Map() {
     useEffect(() => {
         if (mapRef.current) {
             markers.forEach((markerData) => {
+                if (
+                    typeof markerData.lat !== 'undefined' &&
+                    typeof markerData.lng !== 'undefined'
+                ) {
+                    const marker = L.marker([markerData.lat, markerData.lng], {
+                        icon: myIcon,
+                    }).addTo(mapRef.current);
+                    marker.on('click', () => removeMarker(markerData.id));
+                    marker.bindPopup(markerData.id);
+                } else {
+                    console.error('Invalid marker data:', markerData);
+                }
                 console.log('Adding marker to map:', markerData);
-                const marker = L.marker([markerData.lat, markerData.lng], {
-                    icon: myIcon,
-                }).addTo(mapRef.current);
-                marker.on('click', () => removeMarker(markerData.id));
-                marker.bindPopup(markerData.id);
             });
         }
     }, [markers, myIcon, removeMarker]);

@@ -99,8 +99,8 @@ export const GlobalContextProvider = ({ children }) => {
                         label: `Marker ${id}: ${option} at ${latitude},${longitude}`,
                         data: data.hourly[option],
                         fill: false,
-                        backgroundColor: 'rgb(75, 192, 192)',
-                        borderColor: 'rgba(75, 192, 192, 0.2)',
+                        backgroundColor: 'rgb(255, 165, 0)',
+                        borderColor: 'rgb(255, 165, 0)',
                     };
 
                     setChartData((prevChartData) => ({

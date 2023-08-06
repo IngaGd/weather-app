@@ -27,7 +27,10 @@ export default function WeatherDataGraph() {
                     <p key={index}>
                         Marker {index + 1}: Latitude - {marker.lat}, Longitude -{' '}
                         {marker.lng}{' '}
-                        <button onClick={() => removeMarker(marker.id)}>
+                        <button
+                            className="btn"
+                            onClick={() => removeMarker(marker.id)}
+                        >
                             Remove Marker
                         </button>
                     </p>

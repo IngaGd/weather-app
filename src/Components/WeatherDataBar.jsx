@@ -7,12 +7,12 @@ export default function WeatherDataBar() {
 
     return (
         <>
-            <section className="section-bar">
+            <section className="section-bar u-section-padding">
                 <div className="row">
                     <div className="bar-container">
-                        <fieldset>
-                            <legend>Choose forecast option</legend>
-                            <div>
+                        <div className="time-range-selector">
+                            <h3>Please select date range</h3>
+                            <div className="time-range-selector__inputs">
                                 <label htmlFor="startDate">Start Date:</label>
                                 <input
                                     type="date"
@@ -26,8 +26,6 @@ export default function WeatherDataBar() {
                                         )
                                     }
                                 />
-                            </div>
-                            <div>
                                 <label htmlFor="endDate">End Date:</label>
                                 <input
                                     type="date"
@@ -42,6 +40,9 @@ export default function WeatherDataBar() {
                                     }
                                 />
                             </div>
+                        </div>
+                        <div className="weather-options-selector">
+                            <h3>Please select weather option</h3>
                             <div>
                                 <input
                                     type="checkbox"
@@ -120,7 +121,7 @@ export default function WeatherDataBar() {
                                 />
                                 <label htmlFor="snowfall">Snowfall</label>
                             </div>
-                        </fieldset>
+                        </div>
                     </div>
                 </div>
             </section>

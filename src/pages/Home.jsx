@@ -6,6 +6,9 @@ import WeatherDataGraph from '../Components/WeatherDataGraph';
 export default function Home() {
     return (
         <>
+            <div className="row u-text-center">
+                <h1>Weather hystorical data app</h1>
+            </div>
             <WeatherDataBar />
             <Map />
             <WeatherDataGraph />

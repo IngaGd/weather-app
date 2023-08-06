@@ -1,0 +1,22 @@
+.bar-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem 2rem;
+    border: 1px solid $color-secondary;
+    border-radius: 3px;
+    .time-range-selector,
+    .weather-options-selector {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        &__inputs {
+            display: flex;
+        }
+    }
+    label,
+    input {
+        margin-right: 0.5rem;
+    }
+}
