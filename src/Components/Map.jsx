@@ -25,7 +25,6 @@ export default function Map() {
                 'You clicked the map at ' + marker.getLatLng().toString()
             );
             addMarker(e.latlng);
-            // setMapMarkers((markers) => [...markers, marker]);
         };
         if (!mapRef.current) {
             mapRef.current = L.map('map', {
