@@ -101,7 +101,7 @@ export default function Map() {
             <div className="row">
                 <h3>
                     Please add a point to the map by clicking on the map, or
-                    search bar input.
+                    through search bar input.
                 </h3>
                 <div id="map" className="map-container"></div>
             </div>
