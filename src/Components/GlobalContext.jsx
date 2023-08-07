@@ -10,8 +10,8 @@ export const GlobalContextProvider = ({ children }) => {
         return savedMarkers ? JSON.parse(savedMarkers) : [];
     });
     const [dateRange, setDateRange] = useState({
-        startDate: '2022-12-30',
-        endDate: '2022-12-31',
+        startDate: '2023-07-01',
+        endDate: '2023-07-31',
     });
 
     const updateDateRange = (startDate, endDate) => {
