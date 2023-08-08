@@ -43,7 +43,6 @@ export const GlobalContextProvider = ({ children }) => {
     }, [markers, weatherOptions, dateRange]);
 
     const addMarker = (markerData) => {
-        console.log('New marker data:', markerData);
         const id = uuidv4();
         const newMarker = { id, ...markerData };
         setMarkers((prevMarker) => {
@@ -82,9 +81,6 @@ export const GlobalContextProvider = ({ children }) => {
             [option]: !prevOptions[option],
         }));
     };
-    useEffect(() => {
-        console.log(weatherOptions);
-    }, [weatherOptions]);
 
     async function fetchHistoricalData(marker, weatherOptions, dateRange) {
         const { id, lat: latitude, lng: longitude } = marker;

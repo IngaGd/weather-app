@@ -6,6 +6,10 @@
 
 [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)
 
+# open-meteo API for fetching weather data
+
+[open-meteo](https://open-meteo.com/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

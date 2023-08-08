@@ -90,7 +90,6 @@ export default function Map() {
                 } else {
                     console.error('Invalid marker data:', markerData);
                 }
-                console.log('Adding marker to map:', markerData);
             });
         }
     }, [markers, myIcon, removeMarker]);
