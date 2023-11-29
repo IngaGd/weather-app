@@ -41,7 +41,24 @@ export default function WeatherDataGraph() {
                     weatherOptions[option] && (
                         <div className="row" key={index}>
                             <h3>{option}</h3>
-                            {data[option] && <Line data={data[option]} />}
+                            {data[option] && (
+                                <Line
+                                    data={data[option]}
+                                    options={{
+                                        elements: {
+                                            line: {
+                                                borderWidth: 1,
+                                                backgroundColor:
+                                                    'rgb(255, 165, 20)',
+                                            },
+                                            point: {
+                                                radius: 0,
+                                                pointStyle: 'none',
+                                            },
+                                        },
+                                    }}
+                                />
+                            )}
                         </div>
                     )
             )}
